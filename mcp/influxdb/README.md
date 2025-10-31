@@ -39,7 +39,7 @@ Agrega a tu `~/.claude.json`:
       "args": [
         "run", "-i", "--rm", "--init", "--network", "host",
         "-e", "INFLUX_HOST=localhost",
-        "-e", "INFLUX_PORT=8888",
+        "-e", "INFLUX_PORT=8086",
         "-e", "LOG_LEVEL=info",
         "mcp-influxdb:latest"
       ]
@@ -47,6 +47,8 @@ Agrega a tu `~/.claude.json`:
   }
 }
 ```
+
+> **Nota:** `--network host` es necesario solo cuando InfluxDB está en `localhost`. Para servidores remotos (IPs o hostnames), no lo incluyas.
 
 </details>
 
@@ -63,7 +65,7 @@ Agrega a tu `mcp.json` (usualmente en `~/.config/Code/User/mcp.json` o `%APPDATA
       "args": [
         "run", "-i", "--rm", "--init", "--network", "host",
         "-e", "INFLUX_HOST=localhost",
-        "-e", "INFLUX_PORT=8888",
+        "-e", "INFLUX_PORT=8086",
         "-e", "LOG_LEVEL=info",
         "mcp-influxdb:latest"
       ],
@@ -72,6 +74,8 @@ Agrega a tu `mcp.json` (usualmente en `~/.config/Code/User/mcp.json` o `%APPDATA
   }
 }
 ```
+
+> **Nota:** `--network host` es necesario solo cuando InfluxDB está en `localhost`. Para servidores remotos (IPs o hostnames), no lo incluyas.
 
 **Diferencias con Claude Code:**
 - Añade el campo `"type": "stdio"` para especificar el protocolo de comunicación
@@ -93,6 +97,26 @@ Deberías ver **10 herramientas disponibles** ✨
 
 En lugar de editar la configuración cada vez que cambias de entorno, puedes configurar **múltiples servidores** y activar/desactivar según necesites.
 
+### 🌐 Importante: ¿Cuándo usar `--network host`?
+
+> **⚠️ Regla de oro:** Solo usa `--network host` cuando InfluxDB está en **localhost**
+
+| Escenario | `--network host` | Razón |
+|-----------|------------------|-------|
+| InfluxDB en `localhost` o `127.0.0.1` | ✅ **SÍ necesario** | El contenedor Docker necesita acceder a la red del host para conectarse a localhost |
+| InfluxDB en IP remota (ej. `10.142.150.64`) | ❌ **NO necesario** | Docker puede acceder a IPs externas por defecto |
+| InfluxDB en hostname remoto (ej. `influx.ejemplo.com`) | ❌ **NO necesario** | Docker puede resolver DNS y acceder a hosts remotos |
+
+**Ejemplo correcto:**
+```bash
+# ✅ Local - CON --network host
+INFLUX_HOST=localhost    → --network host ✓
+
+# ❌ Remoto - SIN --network host
+INFLUX_HOST=10.142.150.64  → --network host ✗
+INFLUX_HOST=influx.example.com → --network host ✗
+```
+
 ### 📝 Configuración recomendada
 
 Configura 3 servidores con diferentes propósitos:
@@ -112,7 +136,8 @@ Configura 3 servidores con diferentes propósitos:
     "influxdb-local": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
+        "--network", "host",
         "-e", "INFLUX_HOST=localhost",
         "-e", "INFLUX_PORT=8086",
         "-e", "LOG_LEVEL=info",
@@ -122,7 +147,7 @@ Configura 3 servidores con diferentes propósitos:
     "influxdb-prod": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
         "-e", "INFLUX_HOST=10.142.150.64",
         "-e", "INFLUX_PORT=8087",
         "-e", "INFLUX_USERNAME=admin",
@@ -135,7 +160,7 @@ Configura 3 servidores con diferentes propósitos:
     "influxdb-dev": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
         "-e", "INFLUX_HOST=dev.example.com",
         "-e", "INFLUX_PORT=8086",
         "-e", "LOG_LEVEL=debug",
@@ -145,6 +170,8 @@ Configura 3 servidores con diferentes propósitos:
   }
 }
 ```
+
+**Nota:** Observa que solo `influxdb-local` usa `--network host` porque se conecta a `localhost`. Los servidores remotos (`influxdb-prod` e `influxdb-dev`) **NO** lo necesitan.
 
 </details>
 
@@ -157,7 +184,8 @@ Configura 3 servidores con diferentes propósitos:
     "influxdb-local": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
+        "--network", "host",
         "-e", "INFLUX_HOST=localhost",
         "-e", "INFLUX_PORT=8086",
         "mcp-influxdb:latest"
@@ -167,7 +195,7 @@ Configura 3 servidores con diferentes propósitos:
     "influxdb-prod": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
         "-e", "INFLUX_HOST=10.142.150.64",
         "-e", "INFLUX_PORT=8087",
         "-e", "INFLUX_USERNAME=admin",
@@ -180,7 +208,7 @@ Configura 3 servidores con diferentes propósitos:
     "influxdb-dev": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
         "-e", "INFLUX_HOST=dev.example.com",
         "-e", "INFLUX_PORT=8086",
         "mcp-influxdb:latest"
@@ -190,6 +218,8 @@ Configura 3 servidores con diferentes propósitos:
   }
 }
 ```
+
+**Nota:** Solo `influxdb-local` incluye `--network host` porque se conecta a `localhost`. Los demás servidores no lo necesitan.
 
 </details>
 
@@ -236,6 +266,7 @@ Ctrl+Shift+P → "MCP: Manage Servers"
 
 ### 💡 Tips y buenas prácticas
 
+- ✅ **`--network host` solo para localhost**: No lo uses con IPs remotas o hostnames
 - ✅ **Mantén solo un servidor activo a la vez** para evitar confusión
 - ✅ **Usa nombres descriptivos**: `influxdb-proyecto-prod` es mejor que `influxdb2`
 - ✅ **Diferentes LOG_LEVEL por entorno**:
@@ -262,19 +293,20 @@ Pasa las variables usando `-e` en los args de Docker:
 | `ALLOWED_DATABASES` | `*` | 🗄️ Bases permitidas (* para todas, o separadas por comas) |
 | `LOG_LEVEL` | `info` | 📝 Nivel de logs (debug, info, warn, error) |
 
-### 📝 Ejemplo con autenticación
+### 📝 Ejemplos con autenticación
 
 <details>
-<summary>Ver configuración completa</summary>
+<summary><b>🏠 Servidor local con autenticación</b></summary>
 
 **Para Claude Code:**
 ```json
 {
   "mcpServers": {
-    "influxdb": {
+    "influxdb-local": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
+        "--network", "host",
         "-e", "INFLUX_HOST=localhost",
         "-e", "INFLUX_PORT=8086",
         "-e", "INFLUX_USERNAME=admin",
@@ -292,10 +324,11 @@ Pasa las variables usando `-e` en los args de Docker:
 ```json
 {
   "servers": {
-    "influxdb": {
+    "influxdb-local": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm", "--init", "--network", "host",
+        "run", "-i", "--rm", "--init",
+        "--network", "host",
         "-e", "INFLUX_HOST=localhost",
         "-e", "INFLUX_PORT=8086",
         "-e", "INFLUX_USERNAME=admin",
@@ -309,6 +342,56 @@ Pasa las variables usando `-e` en los args de Docker:
   }
 }
 ```
+
+</details>
+
+<details>
+<summary><b>🌐 Servidor remoto con autenticación</b></summary>
+
+**Para Claude Code:**
+```json
+{
+  "mcpServers": {
+    "influxdb-remote": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init",
+        "-e", "INFLUX_HOST=10.142.150.64",
+        "-e", "INFLUX_PORT=8087",
+        "-e", "INFLUX_USERNAME=admin",
+        "-e", "INFLUX_PASSWORD=secret123",
+        "-e", "ALLOWED_DATABASES=production,metrics",
+        "-e", "LOG_LEVEL=warn",
+        "mcp-influxdb:latest"
+      ]
+    }
+  }
+}
+```
+
+**Para VSCode:**
+```json
+{
+  "servers": {
+    "influxdb-remote": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init",
+        "-e", "INFLUX_HOST=10.142.150.64",
+        "-e", "INFLUX_PORT=8087",
+        "-e", "INFLUX_USERNAME=admin",
+        "-e", "INFLUX_PASSWORD=secret123",
+        "-e", "ALLOWED_DATABASES=production,metrics",
+        "-e", "LOG_LEVEL=warn",
+        "mcp-influxdb:latest"
+      ],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+**Nota:** Este ejemplo NO usa `--network host` porque se conecta a una IP remota.
 
 </details>
 
@@ -452,6 +535,45 @@ Para depuración avanzada, cambia el nivel de logs a `debug`:
 ```
 
 Esto mostrará todas las queries ejecutadas y respuestas de InfluxDB.
+
+</details>
+
+<details>
+<summary><b>🌐 Problemas con servidores remotos</b></summary>
+
+Si no puedes conectarte a un servidor InfluxDB remoto:
+
+1. **Verifica que NO estés usando `--network host` innecesariamente:**
+   - `--network host` solo es para `localhost`
+   - Para IPs remotas o hostnames, **NO lo uses**
+
+2. **Prueba la conectividad desde tu máquina:**
+   ```bash
+   curl http://IP_REMOTA:PUERTO/ping
+   ```
+
+   Deberías ver una respuesta `204 No Content`
+
+3. **Verifica firewall/seguridad:**
+   - El puerto debe estar abierto en el servidor remoto
+   - Tu máquina debe tener acceso de red al servidor
+
+4. **Si usas VPN o red corporativa:**
+   - Asegúrate de estar conectado a la VPN
+   - Verifica que las rutas de red sean correctas
+
+**Configuración correcta para servidor remoto:**
+```json
+{
+  "args": [
+    "run", "-i", "--rm", "--init",
+    // ❌ NO usar --network host aquí
+    "-e", "INFLUX_HOST=10.142.150.64",
+    "-e", "INFLUX_PORT=8087",
+    "mcp-influxdb:latest"
+  ]
+}
+```
 
 </details>
 
