@@ -83,7 +83,6 @@ export const RETRYABLE_HTTP_CODES = [408, 429, 500, 502, 503, 504] as const;
 // Default HTTP headers
 export const DEFAULT_HEADERS = {
   'Accept': 'application/json',
-  'Accept-Encoding': 'gzip, deflate',
   'User-Agent': 'mcp-influxdb/1.0.0',
 } as const;
 
