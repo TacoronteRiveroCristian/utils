@@ -89,6 +89,163 @@ Deberías ver **10 herramientas disponibles** ✨
 
 ---
 
+## 🔄 Trabajar con múltiples servidores
+
+En lugar de editar la configuración cada vez que cambias de entorno, puedes configurar **múltiples servidores** y activar/desactivar según necesites.
+
+### 📝 Configuración recomendada
+
+Configura 3 servidores con diferentes propósitos:
+
+| Servidor | Propósito | Cuándo usar |
+|----------|-----------|-------------|
+| `influxdb-local` | 🏠 Desarrollo local | Testing local, sin autenticación |
+| `influxdb-prod` | 🚀 Producción | Datos reales, con credenciales |
+| `influxdb-dev` | 🔧 Staging/Dev | Servidor de desarrollo remoto |
+
+<details>
+<summary><b>📟 Ejemplo para Claude Code (~/.claude.json)</b></summary>
+
+```json
+{
+  "mcpServers": {
+    "influxdb-local": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=localhost",
+        "-e", "INFLUX_PORT=8086",
+        "-e", "LOG_LEVEL=info",
+        "mcp-influxdb:latest"
+      ]
+    },
+    "influxdb-prod": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=10.142.150.64",
+        "-e", "INFLUX_PORT=8087",
+        "-e", "INFLUX_USERNAME=admin",
+        "-e", "INFLUX_PASSWORD=secret",
+        "-e", "ALLOWED_DATABASES=production,metrics",
+        "-e", "LOG_LEVEL=warn",
+        "mcp-influxdb:latest"
+      ]
+    },
+    "influxdb-dev": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=dev.example.com",
+        "-e", "INFLUX_PORT=8086",
+        "-e", "LOG_LEVEL=debug",
+        "mcp-influxdb:latest"
+      ]
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>💻 Ejemplo para VSCode (mcp.json)</b></summary>
+
+```json
+{
+  "servers": {
+    "influxdb-local": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=localhost",
+        "-e", "INFLUX_PORT=8086",
+        "mcp-influxdb:latest"
+      ],
+      "type": "stdio"
+    },
+    "influxdb-prod": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=10.142.150.64",
+        "-e", "INFLUX_PORT=8087",
+        "-e", "INFLUX_USERNAME=admin",
+        "-e", "INFLUX_PASSWORD=secret",
+        "-e", "ALLOWED_DATABASES=production,metrics",
+        "mcp-influxdb:latest"
+      ],
+      "type": "stdio"
+    },
+    "influxdb-dev": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=dev.example.com",
+        "-e", "INFLUX_PORT=8086",
+        "mcp-influxdb:latest"
+      ],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+</details>
+
+### 🎮 Cómo activar/desactivar servidores
+
+#### En Claude Code
+
+**Opción 1: Comando MCP**
+```bash
+# Ver servidores disponibles
+claude mcp list
+
+# Habilitar un servidor
+claude mcp enable influxdb-prod
+
+# Deshabilitar un servidor
+claude mcp disable influxdb-local
+```
+
+**Opción 2: @-mention en el chat**
+```
+@influxdb-prod  # Activa el servidor de producción para esta conversación
+```
+
+**Opción 3: UI interactiva**
+```bash
+claude mcp  # Abre interfaz para gestionar servidores
+```
+
+#### En VSCode
+
+**Opción 1: Settings UI**
+1. Abre Settings (Ctrl+,)
+2. Busca "MCP Servers"
+3. Marca/desmarca los checkboxes de cada servidor
+
+**Opción 2: Deshabilitar temporalmente**
+- Agrega el servidor al array `disabledMcpServers` en settings
+
+**Opción 3: Command Palette**
+```
+Ctrl+Shift+P → "MCP: Manage Servers"
+```
+
+### 💡 Tips y buenas prácticas
+
+- ✅ **Mantén solo un servidor activo a la vez** para evitar confusión
+- ✅ **Usa nombres descriptivos**: `influxdb-proyecto-prod` es mejor que `influxdb2`
+- ✅ **Diferentes LOG_LEVEL por entorno**:
+  - Local/Dev: `info` o `debug`
+  - Producción: `warn` o `error`
+- ✅ **ALLOWED_DATABASES restrictivo en producción**: Lista explícita en lugar de `*`
+- ✅ **Comparte configuraciones** con tu equipo versionando los archivos de config
+
+---
+
 ## ⚙️ Configuración
 
 ### 🔧 Variables de entorno
