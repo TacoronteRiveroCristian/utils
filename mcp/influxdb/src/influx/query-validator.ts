@@ -1,5 +1,5 @@
-import { QueryValidationError } from '@/utils/errors';
-import { FORBIDDEN_KEYWORDS, ALLOWED_FUNCTIONS } from '@/config/constants';
+import { QueryValidationError } from '../utils/errors.js';
+import { FORBIDDEN_KEYWORDS, ALLOWED_FUNCTIONS } from '../config/constants.js';
 
 // Validate that query is read-only (SELECT or SHOW only)
 export function validateReadOnly(query: string): void {

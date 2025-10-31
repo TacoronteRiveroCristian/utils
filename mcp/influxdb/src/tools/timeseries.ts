@@ -1,14 +1,14 @@
-import type { InfluxDBClient } from '@/influx/client';
-import type { QueryOptions, TimeSeriesResult, LastValueResult } from '@/influx/types';
-import { QueryPlanner } from '@/influx/query-planner';
-import { buildLastQuery } from '@/influx/query-builder';
-import { seriesToRows, paginateRows, countPoints } from '@/influx/streaming';
-import { isDatabaseAllowed, loadEnv } from '@/config/env';
-import { DatabaseNotAllowedError } from '@/utils/errors';
-import { validateTimeRange } from '@/utils/time';
-import { createCursor, decodeCursor, validateCursor } from '@/utils/pagination';
-import type { TTLCache } from '@/cache/lru';
-import { buildQueryKey } from '@/cache/lru';
+import type { InfluxDBClient } from '../influx/client.js';
+import type { QueryOptions, TimeSeriesResult, LastValueResult } from '../influx/types.js';
+import { QueryPlanner } from '../influx/query-planner.js';
+import { buildLastQuery } from '../influx/query-builder.js';
+import { seriesToRows, paginateRows, countPoints } from '../influx/streaming.js';
+import { isDatabaseAllowed, loadEnv } from '../config/env.js';
+import { DatabaseNotAllowedError } from '../utils/errors.js';
+import { validateTimeRange } from '../utils/time.js';
+import { createCursor, decodeCursor, validateCursor } from '../utils/pagination.js';
+import type { TTLCache } from '../cache/lru.js';
+import { buildQueryKey } from '../cache/lru.js';
 
 export class TimeSeriesTools {
   private readonly planner: QueryPlanner;

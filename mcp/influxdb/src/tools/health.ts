@@ -1,4 +1,4 @@
-import type { InfluxDBClient } from '@/influx/client';
+import type { InfluxDBClient } from '../influx/client.js';
 
 export class HealthTools {
   constructor(private readonly client: InfluxDBClient) {}

@@ -1,5 +1,5 @@
-import { isRetryableError } from './errors';
-import { getLogger } from './logger';
+import { isRetryableError } from './errors.js';
+import { getLogger } from './logger.js';
 
 export interface RetryOptions {
   maxRetries: number;

@@ -4,9 +4,9 @@ const envSchema = z.object({
   // InfluxDB Connection
   INFLUX_PROTOCOL: z.enum(['http', 'https']).default('http'),
   INFLUX_HOST: z.string().default('localhost'),
-  INFLUX_PORT: z.coerce.number().int().positive().default(8086),
-  INFLUX_USERNAME: z.string().min(1),
-  INFLUX_PASSWORD: z.string().min(1),
+  INFLUX_PORT: z.coerce.number().int().positive().default(8888),
+  INFLUX_USERNAME: z.string().default(''),
+  INFLUX_PASSWORD: z.string().default(''),
   INFLUX_DATABASE: z.string().optional(),
 
   // Timeouts and Connections

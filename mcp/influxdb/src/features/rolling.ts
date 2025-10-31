@@ -1,7 +1,7 @@
 // Rolling window analysis
 
-import type { TimeSeriesPoint } from '@/influx/types';
-import { parseDuration } from '@/utils/time';
+import type { TimeSeriesPoint } from '../influx/types.js';
+import { parseDuration } from '../utils/time.js';
 
 export interface RollingWindowResult {
   window_start: string;

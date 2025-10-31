@@ -1,6 +1,6 @@
 import { LRUCache } from 'lru-cache';
-import type { CacheEntry } from '@/influx/types';
-import { getLogger } from '@/utils/logger';
+import type { CacheEntry } from '../influx/types.js';
+import { getLogger } from '../utils/logger.js';
 
 export class TTLCache<T> {
   private cache: LRUCache<string, CacheEntry<T>>;

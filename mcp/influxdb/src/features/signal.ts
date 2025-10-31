@@ -1,6 +1,6 @@
 // Signal processing features
 
-import type { TimeSeriesPoint } from '@/influx/types';
+import type { TimeSeriesPoint } from '../influx/types.js';
 
 export function zeroCrossingRate(values: number[]): number {
   if (values.length < 2) return 0;

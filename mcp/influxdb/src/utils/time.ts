@@ -1,4 +1,4 @@
-import { InvalidTimeRangeError } from './errors';
+import { InvalidTimeRangeError } from './errors.js';
 
 // Parse ISO 8601 or relative time strings to timestamp
 export function parseTime(timeStr: string): Date {

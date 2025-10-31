@@ -1,4 +1,4 @@
-import type { QueryOptions, AggregationFunction, FillOption } from './types';
+import type { QueryOptions, AggregationFunction, FillOption } from './types.js';
 import {
   validateMeasurement,
   validateField,
@@ -6,8 +6,8 @@ import {
   validateTagValue,
   validateTimeWindow,
   validateLimit,
-} from './query-validator';
-import { parseTime, toInfluxTime } from '@/utils/time';
+} from './query-validator.js';
+import { parseTime, toInfluxTime } from '../utils/time.js';
 
 export class QueryBuilder {
   private selectClauses: string[] = [];

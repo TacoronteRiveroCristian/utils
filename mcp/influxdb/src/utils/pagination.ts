@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import type { PaginationCursor } from '@/influx/types';
+import type { PaginationCursor } from '../influx/types.js';
 
 // Encode pagination cursor to base64
 export function encodeCursor(cursor: PaginationCursor): string {

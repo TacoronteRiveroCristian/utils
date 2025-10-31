@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { MCPServer } from './server.js';
-import { getLogger } from '@/utils/logger';
+import { getLogger } from '../utils/logger.js';
 
 async function main(): Promise<void> {
   const logger = getLogger();

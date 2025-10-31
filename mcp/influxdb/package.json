@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "description": "Servidor MCP para InfluxDB 1.8 - Modo solo lectura con análisis a gran escala",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/core/index.js",
+  "types": "dist/core/index.d.ts",
   "bin": {
-    "mcp-influxdb": "./dist/index.js"
+    "mcp-influxdb": "./dist/core/index.js"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc && tsc-alias",
-    "start": "node dist/index.js",
+    "dev": "tsx watch src/core/index.ts",
+    "build": "tsc",
+    "start": "node dist/core/index.js",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",

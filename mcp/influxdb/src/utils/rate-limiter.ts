@@ -1,5 +1,5 @@
-import { RateLimitError } from './errors';
-import { getLogger } from './logger';
+import { RateLimitError } from './errors.js';
+import { getLogger } from './logger.js';
 
 // Token Bucket implementation for QPS limiting
 export class TokenBucket {

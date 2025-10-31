@@ -4,17 +4,17 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { InfluxDBClient } from '@/influx/client';
-import { TTLCache } from '@/cache/lru';
-import { RateLimiter } from '@/utils/rate-limiter';
-import { MetadataTools } from '@/tools/metadata';
-import { TimeSeriesTools } from '@/tools/timeseries';
-import { FeatureTools } from '@/tools/features';
-import { HealthTools } from '@/tools/health';
-import { loadEnv } from '@/config/env';
-import { createLogger } from '@/utils/logger';
-import type { Env } from '@/config/env';
-import * as schemas from '@/schemas/tools';
+import { InfluxDBClient } from '../influx/client.js';
+import { TTLCache } from '../cache/lru.js';
+import { RateLimiter } from '../utils/rate-limiter.js';
+import { MetadataTools } from '../tools/metadata.js';
+import { TimeSeriesTools } from '../tools/timeseries.js';
+import { FeatureTools } from '../tools/features.js';
+import { HealthTools } from '../tools/health.js';
+import { loadEnv } from '../config/env.js';
+import { createLogger } from '../utils/logger.js';
+import type { Env } from '../config/env.js';
+import * as schemas from '../schemas/tools.js';
 
 export class MCPServer {
   private server: Server;

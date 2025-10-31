@@ -27,4 +27,4 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S mcp -u 1001
 USER mcp
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/core/index.js"]

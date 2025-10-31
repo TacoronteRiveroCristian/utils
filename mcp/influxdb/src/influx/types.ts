@@ -1,4 +1,4 @@
-import type { AGGREGATION_FUNCTIONS, FILL_OPTIONS, QUERY_STRATEGIES } from '@/config/constants';
+import type { AGGREGATION_FUNCTIONS, FILL_OPTIONS, QUERY_STRATEGIES } from '../config/constants.js';
 
 // InfluxDB response types
 export interface InfluxDBResult {

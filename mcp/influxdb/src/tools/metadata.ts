@@ -1,9 +1,9 @@
-import type { InfluxDBClient } from '@/influx/client';
-import type { FieldInfo, RetentionPolicy } from '@/influx/types';
-import { isDatabaseAllowed } from '@/config/env';
-import { DatabaseNotAllowedError } from '@/utils/errors';
-import type { TTLCache } from '@/cache/lru';
-import { buildMetadataKey } from '@/cache/lru';
+import type { InfluxDBClient } from '../influx/client.js';
+import type { FieldInfo, RetentionPolicy } from '../influx/types.js';
+import { isDatabaseAllowed } from '../config/env.js';
+import { DatabaseNotAllowedError } from '../utils/errors.js';
+import type { TTLCache } from '../cache/lru.js';
+import { buildMetadataKey } from '../cache/lru.js';
 
 export class MetadataTools {
   constructor(

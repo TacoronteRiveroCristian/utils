@@ -1,8 +1,8 @@
-import type { QueryOptions, QueryPlan } from './types';
-import { buildQueryFromOptions, buildLastQuery } from './query-builder';
-import { parseTime, calculateOptimalWindow, estimatePoints } from '@/utils/time';
-import { MaxPointsExceededError } from '@/utils/errors';
-import { getLogger } from '@/utils/logger';
+import type { QueryOptions, QueryPlan } from './types.js';
+import { buildQueryFromOptions, buildLastQuery } from './query-builder.js';
+import { parseTime, calculateOptimalWindow, estimatePoints } from '../utils/time.js';
+import { MaxPointsExceededError } from '../utils/errors.js';
+import { getLogger } from '../utils/logger.js';
 
 export class QueryPlanner {
   constructor(

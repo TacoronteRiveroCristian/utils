@@ -1,4 +1,4 @@
-import type { InfluxDBResponse, InfluxDBSeries } from './types';
+import type { InfluxDBResponse, InfluxDBSeries } from './types.js';
 
 // Process chunked streaming responses
 export async function* processChunkedResponse(

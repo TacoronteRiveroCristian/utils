@@ -1,9 +1,9 @@
 import { request, Agent } from 'undici';
-import type { InfluxDBClientConfig, InfluxDBResponse } from './types';
-import { ConnectionError, TimeoutError, InfluxDBError } from '@/utils/errors';
-import { withRetry } from '@/utils/retry';
-import { getLogger, logQuery } from '@/utils/logger';
-import { DEFAULT_HEADERS } from '@/config/constants';
+import type { InfluxDBClientConfig, InfluxDBResponse } from './types.js';
+import { ConnectionError, TimeoutError, InfluxDBError } from '../utils/errors.js';
+import { withRetry } from '../utils/retry.js';
+import { getLogger, logQuery } from '../utils/logger.js';
+import { DEFAULT_HEADERS } from '../config/constants.js';
 
 export class InfluxDBClient {
   private readonly baseUrl: string;

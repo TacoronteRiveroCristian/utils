@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "influxdb": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "--network",
+        "host",
+        "-e",
+        "INFLUX_PROTOCOL=http",
+        "-e",
+        "INFLUX_HOST=localhost",
+        "-e",
+        "INFLUX_PORT=8888",
+        "-e",
+        "INFLUX_USERNAME=",
+        "-e",
+        "INFLUX_PASSWORD=",
+        "-e",
+        "ALLOWED_DATABASES=*",
+        "-e",
+        "LOG_LEVEL=info",
+        "mcp-influxdb:latest"
+      ]
+    }
+  }
+}

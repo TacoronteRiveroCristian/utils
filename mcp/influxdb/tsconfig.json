@@ -12,14 +12,8 @@
     "removeComments": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "noImplicitAny": false,
+    "strict": true,
     "strictNullChecks": false,
-    "strictFunctionTypes": false,
-    "strictBindCallApply": false,
-    "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "alwaysStrict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
@@ -28,17 +22,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "@config/*": ["./src/config/*"],
-      "@influx/*": ["./src/influx/*"],
-      "@tools/*": ["./src/tools/*"],
-      "@features/*": ["./src/features/*"],
-      "@cache/*": ["./src/cache/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@schemas/*": ["./src/schemas/*"]
-    }
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]

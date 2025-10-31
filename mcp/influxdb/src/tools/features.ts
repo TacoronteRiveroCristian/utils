@@ -1,7 +1,7 @@
-import type { TimeSeriesPoint, FeatureResult } from '@/influx/types';
-import * as stat from '@/features/statistical';
-import * as signal from '@/features/signal';
-import { applyRollingWindow, parseRollingConfig } from '@/features/rolling';
+import type { TimeSeriesPoint, FeatureResult } from '../influx/types.js';
+import * as stat from '../features/statistical.js';
+import * as signal from '../features/signal.js';
+import { applyRollingWindow, parseRollingConfig } from '../features/rolling.js';
 
 export class FeatureTools {
   // Extract features from time series

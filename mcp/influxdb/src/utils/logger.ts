@@ -1,5 +1,5 @@
 import pino from 'pino';
-import { loadEnv } from '@/config/env';
+import { loadEnv } from '../config/env.js';
 
 let logger: pino.Logger | null = null;
 
