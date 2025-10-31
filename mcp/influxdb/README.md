@@ -1,19 +1,35 @@
-# Servidor MCP InfluxDB
+# 📊 Servidor MCP InfluxDB
 
-Servidor MCP (Model Context Protocol) para conectar Claude Code con InfluxDB 1.8 mediante Docker.
+> Servidor MCP (Model Context Protocol) para conectar Claude Code y VSCode con InfluxDB 1.8 mediante Docker.
 
-## Quick Start
+<div align="center">
 
-### 1. Build de la imagen Docker
+![InfluxDB](https://img.shields.io/badge/InfluxDB-1.8-blue)
+![Docker](https://img.shields.io/badge/Docker-Required-2496ED)
+![MCP](https://img.shields.io/badge/MCP-Protocol-purple)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+### 1️⃣ Build de la imagen Docker
 
 ```bash
 cd /ruta/a/mcp/influxdb
 docker build -t mcp-influxdb:latest .
 ```
 
-### 2. Configurar Claude Code
+### 2️⃣ Configuración
 
-Agrega a tu configuración de MCP:
+Elige tu cliente MCP preferido:
+
+<details open>
+<summary><b>📟 Claude Code</b></summary>
+
+Agrega a tu `~/.claude.json`:
 
 ```json
 {
@@ -21,18 +37,10 @@ Agrega a tu configuración de MCP:
     "influxdb": {
       "command": "docker",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "--init",
-        "--network",
-        "host",
-        "-e",
-        "INFLUX_HOST=localhost",
-        "-e",
-        "INFLUX_PORT=8888",
-        "-e",
-        "LOG_LEVEL=info",
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=localhost",
+        "-e", "INFLUX_PORT=8888",
+        "-e", "LOG_LEVEL=info",
         "mcp-influxdb:latest"
       ]
     }
@@ -40,28 +48,69 @@ Agrega a tu configuración de MCP:
 }
 ```
 
-### 3. Reiniciar Claude Code
+</details>
 
-Listo. Verifica que "influxdb" aparezca conectado con 10 herramientas disponibles.
+<details>
+<summary><b>💻 VSCode (Claude Dev Extension)</b></summary>
 
-## Configuración
+Agrega a tu `mcp.json` (usualmente en `~/.config/Code/User/mcp.json` o `%APPDATA%\Code\User\mcp.json` en Windows):
 
-### Variables de entorno principales
+```json
+{
+  "servers": {
+    "influxdb": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=localhost",
+        "-e", "INFLUX_PORT=8888",
+        "-e", "LOG_LEVEL=info",
+        "mcp-influxdb:latest"
+      ],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+**Diferencias con Claude Code:**
+- Añade el campo `"type": "stdio"` para especificar el protocolo de comunicación
+- Usa la estructura `"servers"` en lugar de `"mcpServers"`
+- `stdio` = comunicación mediante Standard Input/Output (el método más común para servidores locales)
+
+</details>
+
+### 3️⃣ Reiniciar y verificar
+
+- **Claude Code**: Reinicia Claude Code y verifica que "influxdb" aparezca conectado
+- **VSCode**: Recarga VSCode (Ctrl+Shift+P → "Reload Window")
+
+Deberías ver **10 herramientas disponibles** ✨
+
+---
+
+## ⚙️ Configuración
+
+### 🔧 Variables de entorno
 
 Pasa las variables usando `-e` en los args de Docker:
 
 | Variable | Default | Descripción |
 |----------|---------|-------------|
-| `INFLUX_PROTOCOL` | `http` | Protocolo (http/https) |
-| `INFLUX_HOST` | `localhost` | Host de InfluxDB |
-| `INFLUX_PORT` | `8086` | Puerto de InfluxDB |
-| `INFLUX_USERNAME` | `""` | Usuario (vacío si no hay auth) |
-| `INFLUX_PASSWORD` | `""` | Contraseña (vacío si no hay auth) |
-| `ALLOWED_DATABASES` | `*` | Bases permitidas (* para todas, o separadas por comas) |
-| `LOG_LEVEL` | `info` | Nivel de logs (debug, info, warn, error) |
+| `INFLUX_PROTOCOL` | `http` | 🔒 Protocolo (http/https) |
+| `INFLUX_HOST` | `localhost` | 🖥️ Host de InfluxDB |
+| `INFLUX_PORT` | `8086` | 🔌 Puerto de InfluxDB |
+| `INFLUX_USERNAME` | `""` | 👤 Usuario (vacío si no hay auth) |
+| `INFLUX_PASSWORD` | `""` | 🔑 Contraseña (vacío si no hay auth) |
+| `ALLOWED_DATABASES` | `*` | 🗄️ Bases permitidas (* para todas, o separadas por comas) |
+| `LOG_LEVEL` | `info` | 📝 Nivel de logs (debug, info, warn, error) |
 
-### Ejemplo con autenticación
+### 📝 Ejemplo con autenticación
 
+<details>
+<summary>Ver configuración completa</summary>
+
+**Para Claude Code:**
 ```json
 {
   "mcpServers": {
@@ -82,117 +131,256 @@ Pasa las variables usando `-e` en los args de Docker:
 }
 ```
 
-## Herramientas disponibles
-
-### Metadatos (5 tools)
-- `meta.list_databases` - Lista bases de datos
-- `meta.list_measurements` - Lista measurements
-- `meta.list_fields` - Lista campos con tipos
-- `meta.list_tags` - Lista tags
-- `meta.retention_policies` - Políticas de retención
-
-### Series temporales (3 tools)
-- `timeseries.query` - Query flexible con agregaciones
-- `timeseries.last` - Últimos valores (eficiente)
-- `timeseries.window_agg` - Agregaciones por ventana temporal
-
-### Análisis (1 tool)
-- `features.extract` - Extrae features estadísticas (mean, std, trend, etc.)
-
-### Salud (1 tool)
-- `health.ping` - Verifica conectividad
-
-## Ejemplos de uso
-
-```
-"Lista todas las bases de datos disponibles"
-
-"Muestra los últimos valores de la measurement 'cpu' en 'system_metrics'"
-
-"Calcula el promedio por hora de 'temperature' en los últimos 7 días"
-
-"Extrae features estadísticas de los datos del último mes"
+**Para VSCode:**
+```json
+{
+  "servers": {
+    "influxdb": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--init", "--network", "host",
+        "-e", "INFLUX_HOST=localhost",
+        "-e", "INFLUX_PORT=8086",
+        "-e", "INFLUX_USERNAME=admin",
+        "-e", "INFLUX_PASSWORD=secret",
+        "-e", "ALLOWED_DATABASES=metrics,logs",
+        "-e", "LOG_LEVEL=info",
+        "mcp-influxdb:latest"
+      ],
+      "type": "stdio"
+    }
+  }
+}
 ```
 
-## Arquitectura
+</details>
+
+---
+
+## 🛠️ Herramientas disponibles
+
+El servidor MCP proporciona **10 herramientas** organizadas por categoría:
+
+### 📊 Metadatos (5 tools)
+| Herramienta | Descripción |
+|-------------|-------------|
+| `meta.list_databases` | 🗄️ Lista todas las bases de datos disponibles |
+| `meta.list_measurements` | 📈 Lista measurements de una base de datos |
+| `meta.list_fields` | 🏷️ Lista campos con sus tipos de datos |
+| `meta.list_tags` | 🔖 Lista tags disponibles |
+| `meta.retention_policies` | ⏱️ Consulta políticas de retención |
+
+### ⏰ Series temporales (3 tools)
+| Herramienta | Descripción |
+|-------------|-------------|
+| `timeseries.query` | 🔍 Query flexible con agregaciones personalizadas |
+| `timeseries.last` | ⚡ Últimos valores (optimizado para eficiencia) |
+| `timeseries.window_agg` | 📊 Agregaciones por ventanas temporales |
+
+### 🔬 Análisis (1 tool)
+| Herramienta | Descripción |
+|-------------|-------------|
+| `features.extract` | 📉 Extrae features estadísticas (mean, std, trend, etc.) |
+
+### 💊 Salud (1 tool)
+| Herramienta | Descripción |
+|-------------|-------------|
+| `health.ping` | 🏥 Verifica conectividad con InfluxDB |
+
+---
+
+## 💡 Ejemplos de uso
+
+Simplemente pregúntale a Claude:
+
+> 💬 "Lista todas las bases de datos disponibles"
+
+> 💬 "Muestra los últimos valores de la measurement 'cpu' en 'system_metrics'"
+
+> 💬 "Calcula el promedio por hora de 'temperature' en los últimos 7 días"
+
+> 💬 "Extrae features estadísticas de los datos del último mes"
+
+---
+
+## 🏗️ Arquitectura
 
 ```
-Claude Code
-    ↓ MCP Protocol (stdio)
-Docker Container (mcp-influxdb)
-    ↓ HTTP
-InfluxDB 1.8
+┌─────────────────────┐
+│  Claude Code / VS   │
+│       Code          │
+└──────────┬──────────┘
+           │ MCP Protocol (stdio)
+           ↓
+┌─────────────────────┐
+│ Docker Container    │
+│  (mcp-influxdb)     │
+└──────────┬──────────┘
+           │ HTTP
+           ↓
+┌─────────────────────┐
+│   InfluxDB 1.8      │
+└─────────────────────┘
 ```
 
-El servidor MCP corre en un contenedor Docker que se conecta a tu InfluxDB mediante HTTP.
+El servidor MCP corre en un **contenedor Docker efímero** (`--rm`) que se conecta a tu InfluxDB mediante HTTP/HTTPS.
 
-## Seguridad
+---
 
-- Read-only: Solo permite queries SELECT y SHOW
-- Query validation: Valida y sanitiza todas las queries
-- Whitelist de funciones: Solo funciones seguras
-- Database filtering: Restringe acceso por base de datos
-- Rate limiting: Limita requests concurrentes
+## 🔒 Seguridad
 
-## Troubleshooting
+Este servidor ha sido diseñado con seguridad en mente:
 
-### Servidor no conecta
+- ✅ **Read-only**: Solo permite queries `SELECT` y `SHOW`
+- ✅ **Query validation**: Valida y sanitiza todas las queries
+- ✅ **Whitelist de funciones**: Solo funciones seguras permitidas
+- ✅ **Database filtering**: Restringe acceso mediante `ALLOWED_DATABASES`
+- ✅ **Rate limiting**: Limita requests concurrentes
+- ✅ **No-root user**: El contenedor corre con un usuario no privilegiado
 
-1. Verifica que la imagen existe:
+---
+
+## 🔧 Troubleshooting
+
+<details>
+<summary><b>❌ Servidor no conecta</b></summary>
+
+1. **Verifica que la imagen Docker existe:**
    ```bash
    docker images | grep mcp-influxdb
    ```
 
-2. Si no existe, haz build:
+2. **Si no existe, construye la imagen:**
    ```bash
+   cd /ruta/a/mcp/influxdb
    docker build -t mcp-influxdb:latest .
    ```
 
-### Error de conexión a InfluxDB
+3. **Verifica que Docker está corriendo:**
+   ```bash
+   docker ps
+   ```
 
-1. Verifica que InfluxDB esté corriendo:
+</details>
+
+<details>
+<summary><b>🔌 Error de conexión a InfluxDB</b></summary>
+
+1. **Verifica que InfluxDB esté corriendo:**
    ```bash
    curl http://localhost:8888/ping
    ```
 
-2. Si InfluxDB está en un contenedor Docker, asegúrate de que expone el puerto:
+   Deberías ver una respuesta `204 No Content`
+
+2. **Si InfluxDB está en Docker, verifica el puerto:**
    ```bash
    docker ps | grep influxdb
    ```
 
-### Logs del servidor
+3. **Verifica las variables de entorno:**
+   - `INFLUX_HOST` debe apuntar al host correcto
+   - `INFLUX_PORT` debe coincidir con el puerto expuesto
+   - Si usas autenticación, verifica `INFLUX_USERNAME` y `INFLUX_PASSWORD`
 
-Para ver logs detallados, cambia `LOG_LEVEL` a `debug` en la configuración.
+</details>
 
-## Desarrollo
+<details>
+<summary><b>📝 Ver logs detallados</b></summary>
 
-### Build local
+Para depuración avanzada, cambia el nivel de logs a `debug`:
+
+```json
+"-e", "LOG_LEVEL=debug"
+```
+
+Esto mostrará todas las queries ejecutadas y respuestas de InfluxDB.
+
+</details>
+
+---
+
+## 👨‍💻 Desarrollo
+
+### 📦 Build local
 
 ```bash
+# Instalar dependencias
 npm install
+
+# Compilar TypeScript
 npm run build
+
+# Construir imagen Docker
 docker build -t mcp-influxdb:latest .
 ```
 
-### Tests
+### 🧪 Tests
 
 ```bash
+# Ejecutar todos los tests
 npm test
+
+# Tests unitarios solamente
+npm run test:unit
+
+# Tests de integración
+npm run test:integration
+
+# Coverage
+npm run test:coverage
+
+# Watch mode
+npm run test:watch
 ```
 
-### Linting
+### ✨ Linting y formato
 
 ```bash
+# Verificar código
 npm run lint
+
+# Auto-fix
+npm run lint:fix
+
+# Formatear con Prettier
 npm run format
 ```
 
-## Requisitos
+### 🐳 Docker local
 
-- Docker instalado y corriendo
-- InfluxDB 1.8.x accesible (localmente o remoto)
-- Claude Code con soporte MCP
+```bash
+# Iniciar entorno completo (InfluxDB + MCP Server)
+npm run docker:run
 
-## Licencia
+# Ver logs del servidor
+npm run docker:logs
 
-MIT
+# Detener todo
+npm run docker:down
+```
+
+---
+
+## 📋 Requisitos
+
+- 🐳 Docker instalado y corriendo
+- 📊 InfluxDB 1.8.x accesible (local o remoto)
+- 🤖 Claude Code o VSCode con extensión Claude Dev
+- 📦 Node.js 20+ (solo para desarrollo)
+
+---
+
+## 📄 Licencia
+
+MIT License - Ver [LICENSE](LICENSE) para más detalles
+
+---
+
+<div align="center">
+
+**Hecho con ❤️ por [Cristian TR](https://github.com/cristiantr)**
+
+[⭐ Star en GitHub](https://github.com/cristiantr/utils) • [🐛 Reportar bug](https://github.com/cristiantr/utils/issues) • [💡 Solicitar feature](https://github.com/cristiantr/utils/issues)
+
+</div>
